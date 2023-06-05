@@ -106,7 +106,8 @@ void uavos::UWB_Localization::motorSpeedCallback(const std_msgs::Float32MultiArr
 void uavos::UWB_Localization::pressureCallback(const std_msgs::Float32 & msg)
 {
     static bool Initialized_pressure_bias = false;
-    if(!m_p_mobile->m_range_called && !m_p_mobile->m_imu_called && !m_motor_called)
+    // if(!m_p_mobile->m_range_called && !m_p_mobile->m_imu_called && !m_motor_called)
+    if(!m_p_mobile->m_range_called && !m_p_mobile->m_imu_called)
     {
         Initialized_pressure_bias = false;
         return;

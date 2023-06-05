@@ -35,7 +35,7 @@ z_damping_factor: 1.0
 # larger value reduces low pass effect on xyz
 Q_scale: 1.0
 # uwb measurement error scaling, i.e. measurement noise
-R_scale: 0.1
+R_scale: 0.01
 # acceleration gaussian noise
 tao_acc_sqrt: 0.03
 # acceleration bias noise
