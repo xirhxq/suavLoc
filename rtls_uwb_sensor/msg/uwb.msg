@@ -1,0 +1,3 @@
+string responderId
+float32 precisionRangeM
+float32 precisionRangeErrEst

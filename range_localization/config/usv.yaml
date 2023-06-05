@@ -1,0 +1,76 @@
+slam_fps: 50
+map_frame: map
+vehicle_name: usv
+imu_topic: /imu/data
+range_topic: /slot0/rfsensor
+pressure_topic: /air_pressure
+is_xy_valid: true
+is_z_valid: true
+is_yaw_valid: false
+use_sim_time: true
+
+is_v_xy_valid: false
+is_v_z_valid: false
+
+is_enable_visualization: fasle
+slam_result_print_freq: 1
+
+# parameters for UWB localization
+# UWB setting ====================================
+# Mobile, if /uav_id is set, will follow the /uav_id
+mobile_id: uav_1
+
+init_position: [0.0, 0.0, 0.0]
+# Changi
+anchor_list: [anchor_1, anchor_2, anchor_3, anchor_4]
+anchor_1: [-1535.36075435691,-134.365861648956, 49.5779456256885] #
+anchor_2: [-1500.01443254237, -1363.25190299088, 52.5748832350635] #
+anchor_3: [-1502.46928426662, -739.487847301766, 58.8801043941116]
+anchor_4: [-1520.38236238076, 1468.50136125099, 52.6565774729538] #
+anchor_5: [-1523.87488838533, 1041.84933333093, 63.6104215505456]
+anchor_6: [-1500.83532309419, 513.079633291929, 64.2995304248736] #
+
+# anchor_1: [-1498.0, 2.0, 4.3]
+# anchor_2: [-1500.0, 2.0, 4.3]
+# anchor_3: [-1502.0, 2.0, 4.3]
+# anchor_4: [-1498.0, -2.0, 4.3]
+# anchor_5: [-1500.0, -2.0, 4.3]
+# anchor_6: [-1502.0, -2.0, 4.3]
+
+
+# common filter parameters =================================
+filter_type: 'EKF_Acc'
+
+# larger value produces heavier low pass effect on z, Q * z_damping_factor
+z_damping_factor: 0.01
+# larger value reduces low pass effect on xyz
+Q_scale: 1.0
+# uwb measurement error scaling, i.e. measurement noise
+R_scale: 1.0
+# acceleration gaussian noise
+tao_acc_sqrt: 0.3
+# acceleration bias noise
+tao_bias_sqrt: 0.001
+
+sigma_pressure: 2.0
+
+is_initialize_with_ceres: false
+initialization_innovation_threshold: 50.0
+normal_innovation_threshold: 2.0
+# if both set to 0, then will use static normal_innovation_threshold
+innovation_threshold_inc_on_succ: -0.2
+innovation_threshold_inc_on_fail: 0.6
+
+# EKF parameters -----------------------------
+
+
+# UKF parameters -----------------------------
+ukf_alpha: 0.1
+ukf_beta: 2.0
+ukf_kappa: 0.0
+
+
+
+
+
+

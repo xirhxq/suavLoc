@@ -1,0 +1,20 @@
+<launch>
+
+    <node pkg="range_localization" type="range_node" name="playback" output="screen" >
+        <rosparam command="load" file="$(find range_localization)/config/suav.yaml" />
+        <rosparam command="load" file="/home/ljn/ros/mbzirc_finals_ws/src/range_localization/config/anchor_position_nooploop.yaml" />
+        <param name="vehicle_name"  value="suav_2" />
+        <param name="imu_topic" value="/suav_2/dji_osdk_ros/imu" />
+        <param name="range_topic"  value="/uwb/data" />
+        <param name="pressure_topic"  value="/suav_2/dji_osdk_ros/height_above_takeoff" />
+        <param name="height_topic"  value="/suav_2/dji_osdk_ros/height_above_takeoff" />
+        <rosparam param="init_position" >[0.0, 0.0, 0.0]</rosparam>
+        <rosparam param="init_gps_point" >[39.6530266923, 116.098553547, 27.8607826233]</rosparam>
+    </node>
+    <arg name="rviz" default="true" />
+    <group if="$(arg rviz)">
+        <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find range_localization)/rviz_cfg/uwb_loc_rtls.rviz" />
+    </group> 
+    <!-- <node pkg="rosbag" type="record" name="suav_2_bag_record" args="/suav_2/uwb/data /suav_2/imu/data /suav_2/filter/odom /suav_2/dji_osdk_ros/height_above_takeoff /suav_2/dji_osdk_ros/vo_position /suav_2/dji_osdk_ros/imu -o /home/$(env USER)/suav_2.bag"/> -->
+</launch>
+

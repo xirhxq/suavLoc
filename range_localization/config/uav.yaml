@@ -1,0 +1,52 @@
+map_frame: world
+
+anchor_list: [anchor_0, anchor_1, anchor_2, anchor_3]
+
+# anchor_0 : [-2.687264335742901,-3.3576962765984333,1.5189356888801742]
+# anchor_1 : [2.469720255625078,3.8286334201488295,1.4451398733406973]
+# anchor_2 : [2.844831827622577,-3.4086239754995504,0.999799116731501]
+# anchor_3 : [-2.723466854793322,4.124038756136275,0.8872698148410894]
+
+####################
+#     loosely      #
+####################
+# callback_len: 10
+# # larger value produces heavier low pass effect on z, Q * z_damping_factor, deprecated in senven
+# z_damping_factor: 100.0
+# # larger value reduces low pass effect on xyz
+# Q_scale: 1.0
+# # uwb measurement error scaling, i.e. measurement noise
+# R_scale: 1.0
+# # acceleration gaussian noise
+# tao_acc_sqrt: 10.0
+# # acceleration bias noise
+# tao_bias_sqrt: 0.001
+# # constant velocity standard deviation
+# kalman_sigma_a: 10.0
+
+# sigma_pressure: 0.01
+
+
+####################
+#     tightly      #
+####################
+# larger value produces heavier low pass effect on z, Q * z_damping_factor, deprecated in senven
+z_damping_factor: 1.0
+# larger value reduces low pass effect on xyz
+Q_scale: 1.0
+# uwb measurement error scaling, i.e. measurement noise
+R_scale: 0.1
+# acceleration gaussian noise
+tao_acc_sqrt: 0.03
+# acceleration bias noise
+tao_bias_sqrt: 0.001
+# constant velocity standard deviation
+kalman_sigma_a: 0.01
+# constant velocity standard deviation
+sigma_pressure: 0.001
+
+
+####################
+#       log        #
+####################
+log_residual: true
