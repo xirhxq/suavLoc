@@ -2,9 +2,9 @@
 cmake_minimum_required(VERSION 3.10)
 ##########################################################################
 project("asyncserial")
+set(CMAKE_BUILD_TYPE "Debug")
 ##########################################################################
-option(BUILD_EXAMPLES "Build all examples provided with this library" ON)
-option(BUILD_HEIGHTSENSOR "Build height provided with this library" ON)
+option(BUILD_EXAMPLES "Build all examples provided with this library" OFF)
 ##########################################################################
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 add_library(${PROJECT_NAME} SHARED src/AsyncSerial.cpp)
@@ -21,7 +21,5 @@ if(BUILD_EXAMPLES)
   add_subdirectory(examples/async-serial-receive)
   add_subdirectory(examples/sync-serial-transmit)
 endif()
-if(BUILD_HEIGHTSENSOR)
-  add_subdirectory(examples/heightSensor)
-endif()
+
 ##########################################################################

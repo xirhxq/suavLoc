@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <deque>
-#include "Thirdparty/asyncserial/examples/heightSensor/include/skp40_height_sensor.h"
+#include "skp40_height_sensor.h"
 
 double averaging_filter(const double height);
 
@@ -11,17 +11,23 @@ int main(int argc, char **argv)
     ros::NodeHandle nh("~");
     
     std::string m_serial_port;
+    bool m_check_sensor_state = false;
     nh.param<std::string>("serial_port", m_serial_port, "/dev/ttyUSB0");
+    nh.param<bool>("check_sensor_state", m_check_sensor_state, false);
     std::cout << m_serial_port << std::endl;
     int m_serial_baudrate;
     nh.param<int>("serial_baudrate", m_serial_baudrate, 115200);
 
     ros::Publisher height_publisher = nh.advertise<geometry_msgs::Vector3Stamped>("/skp40_height_sensor/data", 1);
 
-    ROS_INFO("%s,%d",m_serial_port,m_serial_baudrate);
+    // ROS_INFO("%s,%d",m_serial_port,m_serial_baudrate);
+    std::cout << m_serial_port << ":" << m_serial_baudrate << std::endl;
 
-    height_sensor sensor(m_serial_port, m_serial_baudrate);;
-    sensor.check_sensor_state();
+    height_sensor sensor(m_serial_port, m_serial_baudrate);
+    if (m_check_sensor_state == true)
+    {
+        sensor.check_sensor_state();
+    }
 
     while(ros::ok())
     { 

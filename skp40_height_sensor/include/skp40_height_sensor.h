@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 
-#include "../../../include/asyncserial/AsyncSerial.h"
-#include "../../../include/timer.h"
+#include "Thirdparty/asyncserial/include/asyncserial/AsyncSerial.h"
+#include "timer.h"
 
 
 class height_sensor

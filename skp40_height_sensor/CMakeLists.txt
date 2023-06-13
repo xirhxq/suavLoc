@@ -3,13 +3,16 @@ cmake_minimum_required(VERSION 3.10)
 project(skp40_height_sensor)
 ##########################################################################
 set(SERIAL_DEMO_TARGET height_sensor_ros)
+set(CMAKE_BUILD_TYPE "Debug")
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
+
 ##########################################################################
 
 ##########################################################################
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++17)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -124,8 +127,9 @@ catkin_package(
 add_subdirectory(Thirdparty/asyncserial)
 
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}
 )
 
 ## Declare a C++ library
@@ -158,12 +162,13 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(${SERIAL_DEMO_TARGET} skp40_ros_node.cpp)
+
+add_executable(${SERIAL_DEMO_TARGET} src/skp40_ros_node.cpp src/skp40_height_sensor.cpp)
 add_dependencies(${SERIAL_DEMO_TARGET}  ${catkin_EXPORTED_TARGETS})
+target_compile_features(${SERIAL_DEMO_TARGET} PUBLIC cxx_std_17)
 target_link_libraries(
         ${SERIAL_DEMO_TARGET} 
         ${PROJECT_SOURCE_DIR}/Thirdparty/asyncserial/lib/libasyncserial.so
-        ${PROJECT_SOURCE_DIR}/Thirdparty/asyncserial/lib/libskp40_height_library.so
         ${catkin_LIBRARIES}
 )
 

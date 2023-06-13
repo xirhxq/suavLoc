@@ -122,8 +122,20 @@ bool height_sensor::check_sensor_state()
 double height_sensor::get_height()
 {
 //    std::vector<uint8_t> future = {0x55, 0x07, 0x00, 0x52, 0x50, 0x01, 0x57, 0xAA};//test
+    std::cout << "begin to receive" << std::endl;
     std::vector<uint8_t> future = serial.receive(8).get();
-//    print_data(future);
+    print_data(future);
+	if(future[0] != 0x55) // flush the buffer for 55 as the first byte
+        {
+            auto idx = std::find(future.begin(), future.end(), 0x55);
+            if (idx != future.end())
+            {
+                int idx_from_the_first = std::distance(future.begin(), idx);
+                future = serial.receive(idx_from_the_first).get();
+                print_data(future);
+            }
+return 0;
+        }
     if(future[1] == 0x07)
     {
         switch (future[2]) {
