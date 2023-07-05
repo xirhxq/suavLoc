@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(serial)
 
+set(CMAKE_INSTALL_PREFIX /usr/local)
+
 # Find catkin
 find_package(catkin REQUIRED)
 
@@ -55,6 +57,7 @@ elseif(UNIX)
 else()
     target_link_libraries(${PROJECT_NAME} setupapi)
 endif()
+target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 ## Uncomment for example
 add_executable(serial_example examples/serial_example.cc)

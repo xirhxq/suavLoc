@@ -31,7 +31,7 @@ Optional (for documentation):
 
 Get the code:
 
-    git clone https://github.com/wjwwood/serial.git
+    git clone https://github.com/nooploop-dev/serial.git
 
 Build:
 
@@ -41,13 +41,9 @@ Build and run the tests:
 
     make test
 
-Build the documentation:
-
-    make doc
-
 Install:
 
-    make install
+    sudo make install
 
 ### License
 

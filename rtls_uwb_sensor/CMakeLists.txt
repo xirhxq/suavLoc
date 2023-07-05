@@ -6,7 +6,6 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   roscpp
   rospy
-  serial
   std_msgs
 )
 
@@ -29,7 +28,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES Uwb_Location
-CATKIN_DEPENDS roscpp rospy std_msgs message_runtime serial
+CATKIN_DEPENDS roscpp rospy std_msgs message_runtime 
 #  DEPENDS system_lib
 )
 
@@ -46,4 +45,4 @@ include_directories(
 add_executable(display src/display.cpp)
 add_dependencies(display ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(display
-        ${catkin_LIBRARIES})
+        ${catkin_LIBRARIES} serial)
