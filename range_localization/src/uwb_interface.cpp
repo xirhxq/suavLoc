@@ -312,8 +312,8 @@ void uavos::UWB_Localization::rangeOfRICallback2(const nlink_parser::LinktrackNo
         // double range_bias_temp = m_p_mobile->m_anchor_bias.find(rangeinfo.responderId)->second;
         rangeinfo.precisionRangeM = msg.nodes[i].dis;
         rangeinfo.precisionRangeErrEst = 0.1;
-
-        range_vec.RangeInfos.push_back(rangeinfo);
+        if(msg.nodes[i].id < 4)
+            range_vec.RangeInfos.push_back(rangeinfo);
     }
     // if(range_vec.RangeInfos.size() < m_anchor_list.size())
     // {

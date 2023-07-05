@@ -1,0 +1,10 @@
+<launch>
+    <arg name="node_name" default="tuav_3"/>
+    <remap from="/nlink_linktrack_nodeframe0" to="/$(arg node_name)/nlink_linktrack_nodeframe0" />
+    <remap from="/nlink_linktrack_nodeframe3" to="/$(arg node_name)/nlink_linktrack_nodeframe3" />
+    <node pkg="nlink_parser" type="linktrack" name="$(arg node_name)" output="screen">
+        <param name="port_name" value="/dev/ttyUSB0" />
+        <param name="baud_rate" value="921600" />
+        <remap from="/nlink_linktrack_data_transmission" to="/$(arg node_name)/nlink_linktrack_data_transmission" />
+    </node>
+</launch>
