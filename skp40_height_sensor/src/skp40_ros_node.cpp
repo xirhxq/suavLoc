@@ -2,6 +2,7 @@
 #include <geometry_msgs/Vector3Stamped.h>
 #include <deque>
 #include "skp40_height_sensor.h"
+#include "serial_io.hpp"
 
 double averaging_filter(const double height);
 
@@ -13,6 +14,7 @@ int main(int argc, char **argv)
     std::string m_serial_port;
     bool m_check_sensor_state = false;
     nh.param<std::string>("serial_port", m_serial_port, "/dev/ttyUSB0");
+    get_serial_io("FTDI_FT232R_USB_UART", m_serial_port);
     nh.param<bool>("check_sensor_state", m_check_sensor_state, false);
     std::cout << m_serial_port << std::endl;
     int m_serial_baudrate;

@@ -10,5 +10,5 @@ sudo make install
 
 catkin_make
 # usage
-roslaunch range_localization tuav_2_localization_nooploop.launch # tuav_2 is vehicle name
+roslaunch range_localization tuav_2_localization_nooploop.launch # tuav_2 is vehicle namero
 

@@ -163,7 +163,7 @@ include_directories(
 # )
 
 
-add_executable(${SERIAL_DEMO_TARGET} src/skp40_ros_node.cpp src/skp40_height_sensor.cpp)
+add_executable(${SERIAL_DEMO_TARGET} src/skp40_ros_node.cpp src/skp40_height_sensor.cpp include/serial_io.hpp)
 add_dependencies(${SERIAL_DEMO_TARGET}  ${catkin_EXPORTED_TARGETS})
 target_compile_features(${SERIAL_DEMO_TARGET} PUBLIC cxx_std_17)
 target_link_libraries(
