@@ -2,7 +2,7 @@
 #include <string>
 #include <sstream>
 
-int get_serial_io(const std::string key_words, std::string serial_port)   
+int get_serial_io(const std::string key_words, std::string &serial_port)   
 {   
 /**
  * @brief 
