@@ -122,9 +122,9 @@ bool height_sensor::check_sensor_state()
 double height_sensor::get_height()
 {
 //    std::vector<uint8_t> future = {0x55, 0x07, 0x00, 0x52, 0x50, 0x01, 0x57, 0xAA};//test
-    // std::cout << "begin to receive" << std::endl;
+    std::cout << "begin to receive" << std::endl;
     std::vector<uint8_t> future = serial.receive(8).get();
-    // print_data(future);
+    print_data(future);
 	if(future[0] != 0x55) // flush the buffer for 55 as the first byte
     {
         auto idx = std::find(future.begin(), future.end(), 0x55);
@@ -132,7 +132,7 @@ double height_sensor::get_height()
         {
             int idx_from_the_first = std::distance(future.begin(), idx);
             future = serial.receive(idx_from_the_first).get();
-            // print_data(future);
+            print_data(future);
         }
         return 0;
     }
@@ -141,20 +141,20 @@ double height_sensor::get_height()
         switch (future[2]) {
             case 0x00:
             {
-                // std::cout << "[" << timer.tictoc() << "]" <<"系统正常 ";
+                std::cout << "[" << timer.tictoc() << "]" <<"系统正常 ";
                 if (future[6] == get_crc8(future))
                 {
-                    // std::cout << "CRC校验成功 ";
+                    std::cout << "CRC校验成功 ";
                 }
                 else
                 {
-                    // std::cout << "CRC校验失败 ";
+                    std::cout << "CRC校验失败 ";
                 }
                 int height = 0;
                 height += (future[3] << 16);
                 height += (future[4] << 8);
                 height += (future[5]);
-                // std::cout << "高度：" << std::dec << height << "mm" << std::endl;
+                std::cout << "高度：" << std::dec << height << "mm" << std::endl;
                 return height;
             }
             case 0x01:
