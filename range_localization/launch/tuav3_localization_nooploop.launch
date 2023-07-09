@@ -30,6 +30,6 @@
     <group if="$(arg rviz)">
         <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find range_localization)/rviz_cfg/uwb_loc.rviz" />
     </group>        
-    <!-- <node pkg="rosbag" type="record" name="suav_2_bag_record" args="/suav_2/uwb/data /suav_2/imu/data /suav_2/filter/odom /suav_2/dji_osdk_ros/height_above_takeoff /suav_2/dji_osdk_ros/vo_position /suav_2/dji_osdk_ros/imu -o /home/$(env USER)/suav_2.bag"/> -->
+    <node pkg="rosbag" type="record" name="suav_2_bag_record" args="/$(arg vehicle_launch)/nlink_linktrack_nodeframe3 /$(arg vehicle_launch)/dji_osdk_ros/imu -o /home/$(env USER)/loc_ws_new/src/$(arg vehicle_launch).bag"/>
 </launch>
 
