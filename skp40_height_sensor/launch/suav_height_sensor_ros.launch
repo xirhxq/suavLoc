@@ -1,0 +1,15 @@
+<launch>
+    <arg name="node_name" default="suav"/>
+    <remap from="/skp40_height_sensor/data" to="/$(arg node_name)/skp40_height_sensor/data" />
+    <node pkg="skp40_height_sensor" type="height_sensor_ros" name="$(arg node_name)_height_sensor_ros" output="screen" >
+        <param name="serial_port" type="str" value="/dev/ttyUSB0" />
+        <param name="serial_baudrate" type="int" value="115200" />
+        <param name="check_sensor_state" type="bool" value="false" />
+    </node>
+    <arg name="plot" default="false" />
+    <group if="$(arg plot)">
+        <node launch-prefix="nice" pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/skp40_height_sensor/data/vector/y /skp40_height_sensor/data/vector/y" />
+    </group> 
+    <!-- <node pkg="rosbag" type="record" name="suav_2_bag_record" args="/suav_2/uwb/data /suav_2/imu/data /suav_2/filter/odom /suav_2/dji_osdk_ros/height_above_takeoff /suav_2/dji_osdk_ros/vo_position /suav_2/dji_osdk_ros/imu -o /home/$(env USER)/suav_2.bag"/> -->
+</launch>
+

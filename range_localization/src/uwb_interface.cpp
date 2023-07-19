@@ -71,6 +71,8 @@ uavos::UWB_Localization::UWB_Localization(ros::NodeHandle &nh):m_nh(nh)
 
     if(m_use_imu)
         m_imu_sub = m_nh.subscribe(m_imu_sub_topic, m_callback_len, &uavos::UWB_Localization::imuCallback,this);
+    else
+
 
     
     if(m_use_pressure_height)
@@ -231,7 +233,7 @@ void uavos::UWB_Localization::imuCallback(const sensor_msgs::Imu & msg)
 void uavos::UWB_Localization::rangeOfRICallback1(const rtls_uwb_sensor::uwbs & msg)
 {
 
-    if(!m_p_mobile->m_imu_called)
+    if(m_use_imu && !m_p_mobile->m_imu_called)
     {
         return;
     }

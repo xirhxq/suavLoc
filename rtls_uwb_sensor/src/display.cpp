@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     //创建一个serial类
     serial::Serial sp;
     serial::Timeout to = serial::Timeout::simpleTimeout(11);
-    sp.setPort("/dev/ttyUSB0");
+    sp.setPort("/dev/ttyUSB2");
     sp.setBaudrate(115200);
     sp.setTimeout(to);
     try
