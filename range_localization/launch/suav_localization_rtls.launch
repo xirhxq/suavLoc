@@ -1,8 +1,9 @@
 <launch>
     <arg name="vehicle_launch" default="suav" />
     <param name="use_sim_time" type="bool" value= "false" />
-    <node pkg="rtls_uwb_sensor" type="display" name="$(arg vehicle_launch)_display" output="log" >
-        <param name="rtls_serial_port"  value="/dev/ttyUSB2" />
+    <node pkg="rtls_uwb_sensor" type="display" name="$(arg vehicle_launch)_display" output="screen" >
+        <param name="rtls_serial_port"  value="/dev/ttyUSB1" />
+        <param name="rtls_path_key"  value="platform-3610000.xhci-usb-0:3:1.0-port0" />
         <remap from="/uwb/data" to="/$(arg vehicle_launch)/uwb/data" />
     </node>
     <node pkg="range_localization" type="range_node" name="$(arg vehicle_launch)_localization" output="screen" >

@@ -24,11 +24,14 @@ int main(int argc, char** argv)
     ros::NodeHandle nh("~");
     ros::Publisher uwb_publisher = nh.advertise<rtls_uwb_sensor::uwbs>("/uwb/data", 1);
     std::string m_serial_port;
+    std::string m_path_key;
     nh.param<std::string>("rtls_serial_port", m_serial_port,"/dev/ttyUSB0");
+    nh.param<std::string>("rtls_path_key", m_path_key,"platform-3610000.xhci-usb-0:3:1.0-port0");
 
     //创建一个serial类
     serial::Serial sp;
     serial::Timeout to = serial::Timeout::simpleTimeout(11);
+    get_serial_io_by_path(m_path_key, m_serial_port);
     std::cout << "rtls_serial_port: " << m_serial_port << std::endl;
     sp.setPort(m_serial_port);
     sp.setBaudrate(115200);
@@ -46,7 +49,7 @@ int main(int argc, char** argv)
     //判断串口是否打开成功
     if(sp.isOpen())
     {
-        ROS_INFO_STREAM("/dev/ttyUSB0 is opened.");
+        ROS_INFO_STREAM("serial is opened.");
     }
     else
     {
