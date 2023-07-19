@@ -82,7 +82,11 @@ uavos::UWB_Localization::UWB_Localization(ros::NodeHandle &nh):m_nh(nh)
     }
         
     if(m_use_laser_height)
-        m_pressure_sub = m_nh.subscribe(m_height_sub_topic, m_callback_len, &uavos::UWB_Localization::heightCallback,this);
+    {
+        // m_pressure_sub = m_nh.subscribe(m_height_sub_topic, m_callback_len, &uavos::UWB_Localization::heightCallback,this);
+        m_pressure_sub = m_nh.subscribe(m_height_sub_topic, m_callback_len, &uavos::UWB_Localization::SkpHeightCallback,this);
+    }
+        
 
     if(m_uwb_sensor_type == "nooploop")
         m_range_sub = m_nh.subscribe(m_range_sub_topic, m_callback_len, &uavos::UWB_Localization::rangeOfRICallback2,this);
@@ -162,6 +166,57 @@ void uavos::UWB_Localization::heightCallback(const std_msgs::Float32 & msg)
     }
     double t = ros::Time::now().toSec();
     double height = msg.data;
+
+    static std::deque<double> vec_height;
+    
+    // initialization, check whether the height is stable
+    static double ave_height_uwb;
+    static bool Initialized_bias = false;
+    if(!Initialized_bias && !check_height_stable(m_p_mobile->getPosition().z(), ave_height_uwb))
+    {
+        vec_height.push_back( height );
+        printf("Height Sensor Not Initialized\n");
+        return;
+    }
+    Initialized_bias = true;
+    static double delta_uwb_pressure = statistics_average(vec_height) - ave_height_uwb;
+
+    double pressure_height = height - delta_uwb_pressure;
+    
+    static double last_uwb_height = m_p_mobile->getPosition().z();
+    static double last_pressure_height = pressure_height;
+    static bool first_pressure = true;
+    if(!first_pressure)
+    {
+        double delta_uwb_height = abs(m_p_mobile->getPosition().z() - last_uwb_height);
+        double delta_pressure_height = abs(pressure_height - last_pressure_height);
+        if(delta_pressure_height - delta_uwb_height > 0.5)
+        {
+            printf("\033[31m Great Gap Occurs in Pressure height! \033[0m\n");
+            return;
+        }
+        first_pressure = false;
+    }
+
+    if(last_uwb_height > 8.5)
+    {
+        return;
+    }
+    delta_uwb_pressure += 0.02 * constrain(pressure_height - m_p_mobile->getPosition().z(), -0.01, 0.01);
+    printf("delta_uwb_pressure %lf\n",delta_uwb_pressure);
+
+
+    m_p_mobile->ekf_update_pressure(pressure_height, t);    
+}
+void uavos::UWB_Localization::SkpHeightCallback(const geometry_msgs::Vector3Stamped & msg)
+{
+    // static std::deque<double> vec_height;
+    if(!m_p_mobile->m_range_called)
+    {
+        return;
+    }
+    double t = msg.header.stamp.toSec();
+    double height = msg.vector.x;
 
     static std::deque<double> vec_height;
     

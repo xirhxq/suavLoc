@@ -1,7 +1,8 @@
 <launch>
     <arg name="vehicle_launch" default="suav" />
     <param name="use_sim_time" type="bool" value= "false" />
-    <node pkg="rtls_uwb_sensor" type="display" name="$(arg vehicle_launch)_display" output="screen" >
+    <include file="$(find skp40_height_sensor)/launch/suav_height_sensor_ros.launch" />
+    <node pkg="rtls_uwb_sensor" type="display" name="$(arg vehicle_launch)_display" output="log" >
         <param name="rtls_serial_port"  value="/dev/ttyUSB1" />
         <param name="rtls_path_key"  value="platform-3610000.xhci-usb-0:3:1.0-port0" />
         <remap from="/uwb/data" to="/$(arg vehicle_launch)/uwb/data" />
@@ -23,8 +24,9 @@
         <param name="pressure_topic"  value="/$(arg vehicle_launch)/dji_osdk_ros/barometer_height" />
         <param name="motor_speed_topic"  value="/$(arg vehicle_launch)/dji_osdk_ros/motor_speed" />
         
-        <param name="use_laser_height"  value="false" />
-        <param name="height_topic"  value="/$(arg vehicle_launch)/dji_osdk_ros/height_above_takeoff" />
+        <param name="use_laser_height"  value="true" />
+        <!-- <param name="height_topic"  value="/$(arg vehicle_launch)/dji_osdk_ros/height_above_takeoff" /> -->
+        <param name="height_topic"  value="/$(arg vehicle_launch)/skp40_height_sensor/data" />
 
         <rosparam param="init_position" >[0.0, 0.0, 0.0]</rosparam>
         <rosparam param="init_gps_point" >[39.6530266923, 116.098553547, 27.8607826233]</rosparam>

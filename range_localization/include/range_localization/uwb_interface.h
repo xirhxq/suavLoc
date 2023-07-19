@@ -105,6 +105,7 @@ public:
     void pressureCallback(const std_msgs::Float32 & msg);
     void motorSpeedCallback(const std_msgs::Float32MultiArray & msg);
     void heightCallback(const std_msgs::Float32 & msg);
+    void SkpHeightCallback(const geometry_msgs::Vector3Stamped & msg);
 
     void rangeCallback();
     void rangeOfRICallback1(const rtls_uwb_sensor::uwbs & msg);
