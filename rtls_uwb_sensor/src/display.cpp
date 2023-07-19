@@ -11,6 +11,8 @@
 #include "rtls_uwb_sensor/uwb.h"
 #include "rtls_uwb_sensor/uwbs.h"
 #include "tic_toc.h"
+#include "serial_io.hpp"
+
 
 using namespace std;
 
@@ -19,13 +21,16 @@ int main(int argc, char** argv)
 {
    
     ros::init(argc, argv, "uwb_sensor");
-    ros::NodeHandle nh;
+    ros::NodeHandle nh("~");
     ros::Publisher uwb_publisher = nh.advertise<rtls_uwb_sensor::uwbs>("/uwb/data", 1);
+    std::string m_serial_port;
+    nh.param<std::string>("rtls_serial_port", m_serial_port,"/dev/ttyUSB0");
 
     //创建一个serial类
     serial::Serial sp;
     serial::Timeout to = serial::Timeout::simpleTimeout(11);
-    sp.setPort("/dev/ttyUSB2");
+    std::cout << "rtls_serial_port: " << m_serial_port << std::endl;
+    sp.setPort(m_serial_port);
     sp.setBaudrate(115200);
     sp.setTimeout(to);
     try
@@ -63,7 +68,7 @@ int main(int argc, char** argv)
             auto  n = strtmp.find("mc"); //返回的是T2出现的位置 
             if (n != std::string::npos && n == 0)
             {
-                printf("uwb: %lf\n",time_freq.toc());
+                // printf("uwb: %lf\n",time_freq.toc());
                 rtls_uwb_sensor::uwbs uwbs_data;
                 char chartmp[200] = {0};
                 strtmp.copy(chartmp, strtmp.length(), 0);
@@ -74,7 +79,7 @@ int main(int argc, char** argv)
                 double time;
 
                 int n = sscanf((char*)chartmp,"m%c %x %x %x %x %x %x %x %x %c%d:%d", &type, &mask, &range[0], &range[1], &range[2], &range[3], &lnum, &seq, &rangetime, &c, &tid, &aid);
-                printf("mask=0x%02x\nrange[0]=%d(mm)\nrange[1]=%d(mm)\nrange[2]=%d(mm)\nrange[3]=%d(mm)\r\n", mask,range[0], range[1], range[2], range[3]);
+                // printf("mask=0x%02x\nrange[0]=%d(mm)\nrange[1]=%d(mm)\nrange[2]=%d(mm)\nrange[3]=%d(mm)\r\n", mask,range[0], range[1], range[2], range[3]);
 
                 
                 uwbs_data.header.stamp = ros::Time::now();
