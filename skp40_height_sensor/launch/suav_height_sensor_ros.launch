@@ -1,7 +1,7 @@
 <launch>
     <arg name="node_name" default="suav"/>
-    <remap from="/skp40_height_sensor/data" to="/$(arg node_name)/skp40_height_sensor/data" />
-    <node pkg="skp40_height_sensor" type="height_sensor_ros" name="$(arg node_name)_height_sensor_ros" output="screen" >
+    <remap from="/skp40/height" to="/$(arg node_name)/skp40_height_sensor/data" />
+    <node pkg="skp40_height_sensor" type="skp40HeightSensor.py" name="$(arg node_name)_height_sensor_ros" output="screen" >
         <param name="serial_port" type="str" value="/dev/ttyUSB0" />
         <param name="serial_baudrate" type="int" value="115200" />
         <param name="check_sensor_state" type="bool" value="false" />
