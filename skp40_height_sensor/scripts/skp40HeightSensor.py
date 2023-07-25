@@ -66,7 +66,7 @@ class HEIGHTSENSORCOMM:
         self.state = WAITING_DOWN_FRAME_HEAD_1
 
         self.height = -1.0
-        self.heightDeque = deque(maxlen=10)
+        self.heightDeque = deque(maxlen=50)
         self.heightAvg = -1.0
 
         self.downSer = serial.Serial(

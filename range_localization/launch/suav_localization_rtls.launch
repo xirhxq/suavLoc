@@ -9,7 +9,7 @@
     </node>
     <node pkg="range_localization" type="range_node" name="$(arg vehicle_launch)_localization" output="screen" >
         <rosparam command="load" file="$(find range_localization)/config/uav.yaml" />
-        <rosparam command="load" file="$(find range_localization)/config/anchor_position_nooploop.yaml" />
+        <rosparam command="load" file="$(find range_localization)/config/anchor_position_rtls.yaml" />
         <param name="vehicle_name"  value="$(arg vehicle_launch)" />
         
         <param name="uwb_sensor_type"  value="rtls" />
@@ -26,10 +26,13 @@
         
         <param name="use_laser_height"  value="true" />
         <!-- <param name="height_topic"  value="/$(arg vehicle_launch)/dji_osdk_ros/height_above_takeoff" /> -->
-        <param name="height_topic"  value="/$(arg vehicle_launch)/skp40_height_sensor/data" />
+        <param name="height_topic"  value="/$(arg vehicle_launch)/height_sensor/data" />
 
         <rosparam param="init_position" >[0.0, 0.0, 0.0]</rosparam>
         <rosparam param="init_gps_point" >[39.6530266923, 116.098553547, 27.8607826233]</rosparam>
+        <remap from="/suav/filter/odom" to="/$(arg vehicle_launch)/uwb/filter/odom" />
+        <remap from="/suav/filter/path" to="/$(arg vehicle_launch)/uwb/filter/path" />
+        <remap from="/suav/predict/odom" to="/$(arg vehicle_launch)/uwb/predict/odom" />
     </node>
     <arg name="rviz" default="false" />
     <group if="$(arg rviz)">
