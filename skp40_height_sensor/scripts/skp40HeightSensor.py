@@ -30,7 +30,7 @@ READING_DATA = 3
 from glob import glob
 
 PORT = glob('/dev/ttyUSB[0-9]*')[0]
-PORT = path.join('/dev', readlink(glob('/dev/serial/by-path/*usb-0:2.2:1.0*')[0]).split('/')[-1])
+PORT = path.join('/dev', readlink(glob('/dev/serial/by-path/*2.4.2*')[0]).split('/')[-1])
 
 from signal import signal, SIGINT
 
