@@ -14,7 +14,7 @@ uavos::UWB_Localization::UWB_Localization(ros::NodeHandle &nh):m_nh(nh)
     m_nh.param<bool>("is_initialize_with_ceres", m_is_initialize_with_ceres,false);
     m_nh.param<bool>("use_laser_height", m_use_laser_height,false);
     m_nh.param<bool>("use_imu", m_use_imu,false);
-    m_nh.param<int>("callback_len", m_callback_len,10);
+    m_nh.param<int>("callback_len", m_callback_len,1);
     
     // create UWB_Mobile
     

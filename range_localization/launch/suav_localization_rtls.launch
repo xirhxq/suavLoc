@@ -15,7 +15,7 @@
         <param name="uwb_sensor_type"  value="rtls" />
         <!-- <param name="uwb_sensor_type"  value="nooploop" /> -->
 
-        <param name="use_imu"  value="false" />
+        <param name="use_imu"  value="true" />
         <param name="imu_topic" value="/$(arg vehicle_launch)/dji_osdk_ros/imu" />
 
         <param name="range_topic"  value="/$(arg vehicle_launch)/uwb/data" />

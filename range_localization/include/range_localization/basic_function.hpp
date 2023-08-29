@@ -29,8 +29,8 @@ struct HEADER
 };
 struct POSE
 {
-    Eigen::Vector3d position;
-    Eigen::Quaterniond orientation;
+    Eigen::Vector3d position = Eigen::Vector3d(0,0,0);
+    Eigen::Quaterniond orientation = Eigen::Quaterniond(1,0,0,0);
 };
 struct TWIST
 {

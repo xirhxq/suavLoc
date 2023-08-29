@@ -33,18 +33,18 @@ anchor_list: [anchor_0, anchor_1, anchor_2, anchor_3]
 # larger value produces heavier low pass effect on z, Q * z_damping_factor, deprecated in senven
 z_damping_factor: 1.0
 # larger value reduces low pass effect on xyz
-Q_scale: 1.0
+Q_scale: 100.0
 # uwb measurement error scaling, i.e. measurement noise
 R_scale: 0.01
 # acceleration gaussian noise
 tao_acc_sqrt: 0.03
 # acceleration bias noise
-tao_bias_sqrt: 0.001
+tao_bias_sqrt: 0.01
 # constant velocity standard deviation
-kalman_sigma_a: 0.01
+kalman_sigma_a: 0.1
 # constant velocity standard deviation
-sigma_pressure: 0.001
-
+sigma_pressure: 0.01
+callback_len: 1
 
 ####################
 #       log        #
