@@ -29,8 +29,9 @@ READING_DATA = 3
 
 from glob import glob
 
-PORT = glob('/dev/ttyUSB[0-9]*')[0]
-PORT = path.join('/dev', readlink(glob('/dev/serial/by-path/*2.4.2*')[0]).split('/')[-1])
+#PORT = glob('/dev/ttyUSB[0-9]*')[0]
+#PORT = path.join('/dev', readlink(glob('/dev/serial/by-path/*2.4.2*')[0]).split('/')[-1])
+PORT = '/dev/ttyTHS1'
 
 from signal import signal, SIGINT
 
@@ -113,7 +114,7 @@ class HEIGHTSENSORCOMM:
                             pass
                         else:
                             self.height = (downData[-3] + (downData[-4] << 8) + (downData[-5] << 16)) / 1000
-                            #print(f'Height is : {self.height}')
+                            # print(f'Height is : {self.height}')
                             
                             self.heightDeque.append(self.height)
                             
