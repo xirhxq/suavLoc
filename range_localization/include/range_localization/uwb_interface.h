@@ -93,9 +93,11 @@ public:
     std::map<std::string, boost::shared_ptr<uavos::UWB_Anchor> > m_anchor_map;
 
     Eigen::Vector3d m_gps_init;
+    double m_laser_height = 0;
 
     double m_motor_speed = 0;
     bool m_motor_called = false;
+    bool m_laser_called = false;
 
 
     void createUWBMobile(const int mobile_id);

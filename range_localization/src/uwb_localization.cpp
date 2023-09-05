@@ -583,6 +583,10 @@ bool uavos::UWB_Mobile::ekf_update_tightly(const RangeInfoVec &vec_range_info)
     }
     // printf("----------------------updata tightly couple range %lf---------------------------\n", vec_range_info.stamp);
     m_last_update_time = vec_range_info.stamp;
+    if (X(4) < 0)
+    {
+        X(4) = - X(4);
+    }
     setPosition(X(0),X(2),X(4));
     setVelocity(X(1),X(3),X(5));
     setAccelerationBias(0,0,X(6));

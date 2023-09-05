@@ -215,49 +215,53 @@ void uavos::UWB_Localization::SkpHeightCallback(const geometry_msgs::Vector3Stam
     {
         return;
     }
+    m_laser_called = true;
+    m_laser_height = msg.vector.x;
+
     double t = msg.header.stamp.toSec();
     double height = msg.vector.x;
 
-    static std::deque<double> vec_height;
+    // static std::deque<double> vec_height;
     
-    // initialization, check whether the height is stable
-    static double ave_height_uwb;
-    static bool Initialized_bias = false;
-    if(!Initialized_bias && !check_height_stable(m_p_mobile->getPosition().z(), ave_height_uwb))
-    {
-        vec_height.push_back( height );
-        printf("Height Sensor Not Initialized\n");
-        return;
-    }
-    Initialized_bias = true;
-    static double delta_uwb_pressure = statistics_average(vec_height) - ave_height_uwb;
+    // // initialization, check whether the height is stable
+    // static double ave_height_uwb;
+    // static bool Initialized_bias = false;
+    // if(!Initialized_bias && !check_height_stable(m_p_mobile->getPosition().z(), ave_height_uwb))
+    // {
+    //     vec_height.push_back( height );
+    //     printf("Height Sensor Not Initialized\n");
+    //     return;
+    // }
+    // Initialized_bias = true;
+    // static double delta_uwb_pressure = statistics_average(vec_height) - ave_height_uwb;
 
-    double pressure_height = height - delta_uwb_pressure;
+    // double pressure_height = height - delta_uwb_pressure;
     
-    static double last_uwb_height = m_p_mobile->getPosition().z();
-    static double last_pressure_height = pressure_height;
-    static bool first_pressure = true;
-    if(!first_pressure)
-    {
-        double delta_uwb_height = abs(m_p_mobile->getPosition().z() - last_uwb_height);
-        double delta_pressure_height = abs(pressure_height - last_pressure_height);
-        if(delta_pressure_height - delta_uwb_height > 0.5)
-        {
-            printf("\033[31m Great Gap Occurs in Pressure height! \033[0m\n");
-            return;
-        }
-        first_pressure = false;
-    }
+    // static double last_uwb_height = m_p_mobile->getPosition().z();
+    // static double last_pressure_height = pressure_height;
+    // static bool first_pressure = true;
+    // if(!first_pressure)
+    // {
+    //     double delta_uwb_height = abs(m_p_mobile->getPosition().z() - last_uwb_height);
+    //     double delta_pressure_height = abs(pressure_height - last_pressure_height);
+    //     if(delta_pressure_height - delta_uwb_height > 0.5)
+    //     {
+    //         printf("\033[31m Great Gap Occurs in Pressure height! \033[0m\n");
+    //         return;
+    //     }
+    //     first_pressure = false;
+    // }
 
-    if(last_uwb_height > 8.5)
-    {
-        return;
-    }
-    delta_uwb_pressure += 0.02 * constrain(pressure_height - m_p_mobile->getPosition().z(), -0.01, 0.01);
-    printf("delta_uwb_pressure %lf\n",delta_uwb_pressure);
+    // if(last_uwb_height > 20.0)
+    // {
+    //     return;
+    // }
+    // delta_uwb_pressure += 0.02 * constrain(pressure_height - m_p_mobile->getPosition().z(), -0.01, 0.01);
+    // printf("delta_uwb_pressure %lf\n",delta_uwb_pressure);
 
 
-    m_p_mobile->ekf_update_pressure(pressure_height, t);    
+    // m_p_mobile->ekf_update_pressure(pressure_height, t);    
+    // m_p_mobile->ekf_update_pressure(height, t);   
 }
 
 void uavos::UWB_Localization::imuCallback(const sensor_msgs::Imu & msg)
@@ -313,7 +317,22 @@ void uavos::UWB_Localization::rangeOfRICallback1(const rtls_uwb_sensor::uwbs & m
 
         double lla[3] = {0};
         double lla0[3] = {m_gps_init[0], m_gps_init[1], m_gps_init[2]};
-        double xyz[3] = {m_p_mobile->getPosition().x(), m_p_mobile->getPosition().y(),m_p_mobile->getPosition().z()};
+        double xyz[3] = {0,0,0};
+        static double delta_laser_height = 0;
+        if(m_laser_called && m_laser_height < 5)
+        {
+            xyz[0] = m_p_mobile->getPosition().x();
+            xyz[1] = m_p_mobile->getPosition().y();
+            xyz[2] = m_laser_height;
+            delta_laser_height = m_p_mobile->getPosition().z() - m_laser_height;
+        }
+        else
+        {
+            xyz[0] = m_p_mobile->getPosition().x();
+            xyz[1] = m_p_mobile->getPosition().y();
+            xyz[2] = m_p_mobile->getPosition().z() - delta_laser_height;
+        }
+        
         enu2lla::enuToLlh(lla0, xyz, lla);
 
         nav_msgs::Odometry odom;
