@@ -94,6 +94,7 @@ public:
 
     Eigen::Vector3d m_gps_init;
     double m_laser_height = 0;
+    double m_height_switch_laser_off;
 
     double m_motor_speed = 0;
     bool m_motor_called = false;

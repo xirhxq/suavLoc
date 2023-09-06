@@ -43,5 +43,6 @@ int main(int argc, char **argv)
     ros::spinOnce();
     loop_rate.sleep();
   }
+  serial.close();
   return EXIT_SUCCESS;
 }

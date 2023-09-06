@@ -15,6 +15,7 @@ uavos::UWB_Localization::UWB_Localization(ros::NodeHandle &nh):m_nh(nh)
     m_nh.param<bool>("use_laser_height", m_use_laser_height,false);
     m_nh.param<bool>("use_imu", m_use_imu,false);
     m_nh.param<int>("callback_len", m_callback_len,1);
+    m_nh.param<double>("height_switch_laser_off",m_height_switch_laser_off,15.0);
     
     // create UWB_Mobile
     
@@ -319,7 +320,7 @@ void uavos::UWB_Localization::rangeOfRICallback1(const rtls_uwb_sensor::uwbs & m
         double lla0[3] = {m_gps_init[0], m_gps_init[1], m_gps_init[2]};
         double xyz[3] = {0,0,0};
         static double delta_laser_height = 0;
-        if(m_laser_called && m_laser_height < 5)
+        if(m_laser_called && m_laser_height < m_height_switch_laser_off)
         {
             xyz[0] = m_p_mobile->getPosition().x();
             xyz[1] = m_p_mobile->getPosition().y();
@@ -409,13 +410,22 @@ void uavos::UWB_Localization::rangeOfRICallback2(const nlink_parser::LinktrackNo
     if(m_p_mobile->ekf_update_tightly(range_vec))
     // if(m_p_mobile->kalmanFilter3DUpdate(range_vec))
     {
-        nav_msgs::Odometry odom;
+        static double delta_laser_height = 0;
 
+        nav_msgs::Odometry odom;
         odom.header.stamp = ros::Time().fromSec(range_vec.stamp);
         odom.header.frame_id = m_frame_id;
         odom.pose.pose.position.x = m_p_mobile->getPosition().x();
         odom.pose.pose.position.y = m_p_mobile->getPosition().y();
-        odom.pose.pose.position.z = m_p_mobile->getPosition().z();
+        if(m_laser_called && m_laser_height < m_height_switch_laser_off)
+        {
+            odom.pose.pose.position.z = m_laser_height;
+            delta_laser_height = m_p_mobile->getPosition().z() - m_laser_height;
+        }
+        else
+        {
+            odom.pose.pose.position.z = m_p_mobile->getPosition().z() - delta_laser_height;
+        }
         odom.pose.pose.orientation.x = m_p_mobile->getOritation().x();
         odom.pose.pose.orientation.y = m_p_mobile->getOritation().y();
         odom.pose.pose.orientation.z = m_p_mobile->getOritation().z();

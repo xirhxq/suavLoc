@@ -2,9 +2,10 @@
     <arg name="node_name" default="tuav2"/>
     <remap from="/nlink_linktrack_nodeframe0" to="/$(arg node_name)/nlink_linktrack_nodeframe0" />
     <remap from="/nlink_linktrack_nodeframe3" to="/$(arg node_name)/nlink_linktrack_nodeframe3" />
-    <node pkg="nlink_parser" type="linktrack" name="$(arg node_name)" output="screen">
-        <param name="port_name" value="/dev/ttyUSB1" />
+    <node pkg="nlink_parser" type="linktrack" name="$(arg node_name)_nooploop" output="screen">
+        <param name="port_name" value="/dev/ttyUSB2" />
         <param name="baud_rate" value="921600" />
+        <param name="port_by_id" value="usb-Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_bc0d08d29cd1eb11b9307454e93fd3f1-if00-port0" />
         <remap from="/nlink_linktrack_data_transmission" to="/$(arg node_name)/nlink_linktrack_data_transmission" />
     </node>
 </launch>

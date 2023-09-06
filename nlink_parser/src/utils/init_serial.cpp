@@ -3,6 +3,8 @@
 #include <ros/ros.h>
 
 #include <string>
+
+#include "serial_io.hpp"
 /*
 void enumerate_ports() {
   auto devices_found = serial::list_ports();
@@ -22,10 +24,11 @@ void initSerial(serial::Serial *serial)
 {
   try
   {
-    auto port_name =
+    std::string port_name =
         ros::param::param<std::string>("~port_name", "/dev/ttyUSB0");
-    auto baud_rate = ros::param::param<int>("~baud_rate", 921600);
-
+    int baud_rate = ros::param::param<int>("~baud_rate", 921600);
+    std::string port_by_id = ros::param::param<std::string>("~port_by_id", "usb-Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller");
+    get_serial_io(port_by_id, port_name);
     serial->setPort(port_name);
     serial->setBaudrate(static_cast<uint32_t>(baud_rate));
     ROS_INFO("try to open serial port with %s,%d", port_name.data(), baud_rate);
