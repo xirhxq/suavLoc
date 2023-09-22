@@ -22,7 +22,7 @@
         <param name="motor_speed_topic"  value="/$(arg vehicle_launch)/dji_osdk_ros/motor_speed" />
         
         <param name="use_laser_height"  value="true" />
-        <param name="height_switch_laser_off" value="10.0" />
+        <param name="height_switch_laser_off" value="15.0" />
         <!-- <param name="height_topic"  value="/$(arg vehicle_launch)/dji_osdk_ros/height_above_takeoff" /> -->
         <param name="height_topic"  value="/$(arg vehicle_launch)/height_sensor/data" />
 
