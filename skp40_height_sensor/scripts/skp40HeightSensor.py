@@ -88,7 +88,7 @@ class HEIGHTSENSORCOMM:
         return time()
 
     def readData(self):
-        while True:
+        while not rospy.is_shutdown():
             data = self.downSer.read(1)
             if data:
                 if self.state == WAITING_DOWN_FRAME_HEAD_1:
@@ -140,6 +140,7 @@ class HEIGHTSENSORCOMM:
 
     def rosPub(self):
         msg = Vector3Stamped()
+        msg.header.stamp = rospy.Time.now()
         msg.vector.x = self.height
         msg.vector.y = self.heightAvg
         self.heightPub.publish(msg)
