@@ -217,10 +217,10 @@ void uavos::UWB_Localization::SkpHeightCallback(const geometry_msgs::Vector3Stam
         return;
     }
     m_laser_called = true;
-    m_laser_height = msg.vector.x;
+    m_laser_height = msg.vector.y;
 
     double t = msg.header.stamp.toSec();
-    double height = msg.vector.x;
+    double height = msg.vector.y;
 
     // static std::deque<double> vec_height;
     
@@ -273,7 +273,8 @@ void uavos::UWB_Localization::imuCallback(const sensor_msgs::Imu & msg)
         return;
     }
 
-    double t = msg.header.stamp.toSec();
+    //double t = msg.header.stamp.toSec();
+    double t = ros::Time::now().toSec();
     // std::cout<< "IMU stamp: "<< msg.header.stamp << std::endl;
     // std::cout<< "ros stamp: "<< ros::Time::now() << std::endl;
     Eigen::Quaterniond imu_q(msg.orientation.w, msg.orientation.x, msg.orientation.y, msg.orientation.z); 
@@ -417,15 +418,23 @@ void uavos::UWB_Localization::rangeOfRICallback2(const nlink_parser::LinktrackNo
         odom.header.frame_id = m_frame_id;
         odom.pose.pose.position.x = m_p_mobile->getPosition().x();
         odom.pose.pose.position.y = m_p_mobile->getPosition().y();
-        if(m_laser_called && m_laser_height < m_height_switch_laser_off)
+        std::cout << m_laser_called << std::endl;
+        std::cout << m_laser_height << std::endl;
+        std::cout << m_height_switch_laser_off << std::endl;
+        static int count_stable  = 100;
+        if(count_stable < 0 && m_laser_called && m_laser_height < m_height_switch_laser_off)
         {
+            std::cout << "m_height_switch_laser_on: " << m_laser_height << std::endl;
             odom.pose.pose.position.z = m_laser_height;
             delta_laser_height = m_p_mobile->getPosition().z() - m_laser_height;
         }
         else
         {
+        	count_stable -= 1;
+        	std::cout << "m_height_switch_laser_off: " << m_laser_height << std::endl;
             odom.pose.pose.position.z = m_p_mobile->getPosition().z() - delta_laser_height;
         }
+        std::cout << "count_stable" << count_stable << std::endl;
         odom.pose.pose.orientation.x = m_p_mobile->getOritation().x();
         odom.pose.pose.orientation.y = m_p_mobile->getOritation().y();
         odom.pose.pose.orientation.z = m_p_mobile->getOritation().z();
