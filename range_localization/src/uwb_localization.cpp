@@ -213,21 +213,21 @@ bool uavos::UWB_Mobile::acc_body_to_NWU(const Eigen::Quaterniond q_b_to_w, const
 
     uav_state.pose.orientation = q_b_to_w;
     Eigen::Vector3d acc_world = q_b_to_w * acc_body;
-    static int _init_imu_bias = 600;
-    if(_init_imu_bias > 0)
-    {
-        printf("\033[32m Please keep static! \033[0m\n");
-        acc_bias += acc_world;
-        _init_imu_bias -= 1;
-        if(_init_imu_bias == 0)
-        {
-            acc_bias /= 600;
-            m_imu_is_inited = true;
-            printf("\033[31m Can begin to move! \033[0m\n");
-            std::cout<<acc_bias<<std::endl;
-        }
-        return false;
-    }
+    // static int _init_imu_bias = 600;
+    // if(_init_imu_bias > 0)
+    // {
+    //     printf("\033[32m Please keep static! \033[0m\n");
+    //     acc_bias += acc_world;
+    //     _init_imu_bias -= 1;
+    //     if(_init_imu_bias == 0)
+    //     {
+    //         acc_bias /= 600;
+    //         m_imu_is_inited = true;
+    //         printf("\033[31m Can begin to move! \033[0m\n");
+    //         std::cout<<acc_bias<<std::endl;
+    //     }
+    //     return false;
+    // }
     uav_state.acceleration.linear.x() = acc_world.x() - acc_bias.x();
     uav_state.acceleration.linear.y() = acc_world.y() - acc_bias.y();
     uav_state.acceleration.linear.z() = acc_world.z() - acc_bias.z();
@@ -282,7 +282,8 @@ void uavos::UWB_Mobile::ekf_predict(const Eigen::Quaterniond imu_ori, const Eige
          0,  0,  0,  0,  0,  1, -T,
          0,  0,  0,  0,  0,  0, 1;
 
-    Eigen::Matrix<double, 3, 1> u(0, 0, m_uav_state.acceleration.linear.z());
+    // Eigen::Matrix<double, 3, 1> u(0, 0, m_uav_state.acceleration.linear.z());
+    Eigen::Matrix<double, 3, 1> u(0, 0, 0);
     Eigen::Matrix<double, 7, 3> B = Eigen::Matrix<double, 7, 3>::Zero();
     B(4,2) = 0.5 * T * T;
     B(5,2) =  T;
@@ -494,6 +495,7 @@ bool uavos::UWB_Mobile::ekf_update_tightly(const RangeInfoVec &vec_range_info)
     {
         return false;
     }
+
     static Eigen::Matrix<double, 4, 3> anchor_positions = get_anchors_position();
 
     if(isPointInBox(anchor_positions, m_position) && m_position.z() < 0.75)
@@ -539,6 +541,10 @@ bool uavos::UWB_Mobile::ekf_update_tightly(const RangeInfoVec &vec_range_info)
         H(i,2) = (X(2) - XYZ0(1))/z_pred(i,0);
         H(i,4) = (X(4) - XYZ0(2))/z_pred(i,0);
         R(i,i) = std::pow(sigma_r,2) * m_R_scale;
+        if(std::abs(z_meas(i,0) - z_pred(i,0)) > 1)
+        {
+            R(i,i) = std::pow(sigma_r,2) * m_R_scale * std::abs(z_meas(i,0) - z_pred(i,0)) * std::abs(z_meas(i,0) - z_pred(i,0));
+        }
     }
 
     // ROS_INFO("--------------------------------");
@@ -586,11 +592,23 @@ bool uavos::UWB_Mobile::ekf_update_tightly(const RangeInfoVec &vec_range_info)
     if (X(4) < 0)
     {
         X(4) = - X(4);
+        X(5) = - X(5);
+    }
+    if( abs(X(5)) > 10)
+    {
+        X(5) = 0.0;
     }
     setPosition(X(0),X(2),X(4));
     setVelocity(X(1),X(3),X(5));
     setAccelerationBias(0,0,X(6));
     setStateCovariance(P);
+    
+    // static bool filter_convergent = false;
+    // if (!filter_convergent && e_meas.norm() > 2)
+    // {
+    //     return false;
+    // }
+    // filter_convergent = true;
     
     return true;
 }

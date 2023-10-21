@@ -81,6 +81,7 @@ include_directories(
     include
     ${catkin_INCLUDE_DIRS}
     src/utils
+/tmp/usr/local
     )
 
 set(nutils "nutils")

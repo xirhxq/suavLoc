@@ -39,8 +39,11 @@ CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  #/tmp/usr/local
 )
-
+find_package(
+	serial
+)
 #可执行文件配置
 add_executable(display src/display.cpp)
 add_dependencies(display ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

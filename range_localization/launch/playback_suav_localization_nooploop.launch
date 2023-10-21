@@ -1,8 +1,8 @@
 <launch>
     <arg name="vehicle_launch" default="suav" />
-    <param name="use_sim_time" type="bool" value= "false" />
-    <include file="$(find skp40_height_sensor)/launch/suav_height_sensor_ros.launch" />
-    <include file="$(find nlink_parser)/launch/linktrack_suav.launch" />
+    <param name="use_sim_time" type="bool" value= "true" />
+    <!-- <include file="$(find skp40_height_sensor)/launch/suav_height_sensor_ros.launch" /> -->
+    <!-- <include file="$(find nlink_parser)/launch/linktrack_suav.launch" /> -->
 
     <node pkg="range_localization" type="range_node" name="$(arg vehicle_launch)_localization" output="screen" >
         <rosparam command="load" file="$(find range_localization)/config/uav.yaml" />

@@ -217,10 +217,10 @@ void uavos::UWB_Localization::SkpHeightCallback(const geometry_msgs::Vector3Stam
         return;
     }
     m_laser_called = true;
-    m_laser_height = msg.vector.x;
+    m_laser_height = msg.vector.y;
 
     double t = msg.header.stamp.toSec();
-    double height = msg.vector.x;
+    double height = msg.vector.y;
 
     // static std::deque<double> vec_height;
     
@@ -407,33 +407,83 @@ void uavos::UWB_Localization::rangeOfRICallback2(const nlink_parser::LinktrackNo
     // }
 
 
+    double t = range_vec.stamp - 0.000001;
+    Eigen::Quaterniond imu_q(1,0,0,0); 
+    Eigen::Vector3d imu_acc(0,0,0);
+    m_p_mobile->ekf_predict(imu_q, imu_acc, t);
+
+
+
     if(m_p_mobile->ekf_update_tightly(range_vec))
     // if(m_p_mobile->kalmanFilter3DUpdate(range_vec))
     {
-        static double delta_laser_height = 0;
-
         nav_msgs::Odometry odom;
         odom.header.stamp = ros::Time().fromSec(range_vec.stamp);
         odom.header.frame_id = m_frame_id;
         odom.pose.pose.position.x = m_p_mobile->getPosition().x();
         odom.pose.pose.position.y = m_p_mobile->getPosition().y();
-        if(m_laser_called && m_laser_height < m_height_switch_laser_off)
+        odom.pose.pose.position.z = m_p_mobile->getPosition().z();
+        
+
+        if(m_laser_called)
         {
-            odom.pose.pose.position.z = m_laser_height;
-            delta_laser_height = m_p_mobile->getPosition().z() - m_laser_height;
+            // static double last_height = 0.0;
+            // static double delta_switch = 0.0;
+            // static double  factor = 1.0;
+            // 如果从laser -> uwb  , uwb需要大于15m
+            std::cout << m_laser_height << " , " <<m_p_mobile->getPosition().z() << std::endl;
+            static bool m_switch_laser_on = true;
+            if(m_switch_laser_on)
+            {
+                odom.pose.pose.position.z = m_laser_height;// + delta_switch * factor;
+                if(m_p_mobile->getPosition().z() > m_height_switch_laser_off)
+                {
+
+                    m_switch_laser_on = false;
+                    // delta_switch = odom.pose.pose.position.z - m_p_mobile->getPosition().z();
+                    // factor = 1.0;
+                    std::cout << "height switch laser off because height is larger than: " << m_height_switch_laser_off << std::endl;
+                }
+                
+            }
+            // 如果从uwb->laser， uwb需要小于13m
+            else
+            {
+                odom.pose.pose.position.z = m_p_mobile->getPosition().z() ;//+ delta_switch  * factor;
+                if(m_p_mobile->getPosition().z() < (m_height_switch_laser_off - 2))
+                {
+                    m_switch_laser_on = true;
+                    // delta_switch = odom.pose.pose.position.z - m_laser_height;
+                    // factor = 1.0;
+                    std::cout << "height switch laser on because height is smaller than: " << m_height_switch_laser_off - 2 << std::endl;
+                }
+            }
+            // factor -= 0.01; // to filter the jump
+            // if(factor < 0)
+            // {
+            //     delta_switch = 0.0;
+            // }
         }
-        else
-        {
-            odom.pose.pose.position.z = m_p_mobile->getPosition().z() - delta_laser_height;
-        }
-        odom.pose.pose.orientation.x = m_p_mobile->getOritation().x();
+        
+        
+
+        double lla[3] = {0};
+        double lla0[3] = {m_gps_init[0], m_gps_init[1], m_gps_init[2]};
+        double xyz[3] = {odom.pose.pose.position.x,odom.pose.pose.position.y,odom.pose.pose.position.z};
+        enu2lla::enuToLlh(lla0, xyz, lla);
+
+	odom.pose.pose.orientation.x = m_p_mobile->getOritation().x();
         odom.pose.pose.orientation.y = m_p_mobile->getOritation().y();
         odom.pose.pose.orientation.z = m_p_mobile->getOritation().z();
         odom.pose.pose.orientation.w = m_p_mobile->getOritation().w();
         odom.twist.twist.linear.x = m_p_mobile->getVelocity().x();
         odom.twist.twist.linear.y = m_p_mobile->getVelocity().y();
         odom.twist.twist.linear.z = m_p_mobile->getVelocity().z();
-        pose_filter_pub.publish(odom);
+        odom.twist.twist.angular.x = lla[0];
+        odom.twist.twist.angular.y = lla[1];
+        odom.twist.twist.angular.z = lla[2];
+
+	pose_filter_pub.publish(odom);
 
         // publish path
         geometry_msgs::PoseStamped pose_stamped;

@@ -29,9 +29,10 @@ READING_DATA = 3
 
 from glob import glob
 
-#PORT = glob('/dev/ttyUSB[0-9]*')[0]
-#PORT = path.join('/dev', readlink(glob('/dev/serial/by-path/*2.4.2*')[0]).split('/')[-1])
-PORT = '/dev/ttyTHS1'
+PORT = glob('/dev/ttyUSB[0-9]*')[0]
+PORT = path.join('/dev', readlink(glob('/dev/serial/by-id/*FTDI_FT232R_USB_UART*')[0]).split('/')[-1])
+print("PORT: ", PORT)
+# PORT = '/dev/ttyTHS1'
 
 from signal import signal, SIGINT
 
@@ -88,7 +89,7 @@ class HEIGHTSENSORCOMM:
         return time()
 
     def readData(self):
-        while True:
+        while not rospy.is_shutdown():
             data = self.downSer.read(1)
             if data:
                 if self.state == WAITING_DOWN_FRAME_HEAD_1:
@@ -134,12 +135,14 @@ class HEIGHTSENSORCOMM:
 
     def printState(self):
         system('clear')
-        print('-' * 20)
-        print(f'Height: {self.height:.3f}m')
-        print(f'Deque: {self.heightDeque}')
+        # print('-' * 20)
+        # print('Height: {self.height:.3f}m')
+        # print(f'Deque: {self.heightDeque}')
+        print("height: ",self.height )
 
     def rosPub(self):
         msg = Vector3Stamped()
+        msg.header.stamp = rospy.Time.now()
         msg.vector.x = self.height
         msg.vector.y = self.heightAvg
         self.heightPub.publish(msg)
@@ -156,6 +159,6 @@ class HEIGHTSENSORCOMM:
 
 
 if __name__ == '__main__':
-    print(f'PORT is {PORT}')
+    # print(f'PORT is {PORT}')
     hsc = HEIGHTSENSORCOMM()
     hsc.spin()

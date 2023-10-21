@@ -5,7 +5,7 @@
     <node pkg="nlink_parser" type="linktrack" name="$(arg node_name)_nooploop" output="screen">
         <param name="port_name" value="/dev/ttyUSB2" />
         <param name="baud_rate" value="921600" />
-        <param name="port_by_id" value="usb-Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_7c4bfcbc9cd1eb11bd097454e93fd3f1-if00-port0" />
+        <param name="port_by_id" value="usb-Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_96aaf7bc9bd1eb11aff47054e93fd3f1-if00-port0" />
         <remap from="/nlink_linktrack_data_transmission" to="/$(arg node_name)/uwb/nlink_linktrack_data_transmission" />
     </node>
 </launch>

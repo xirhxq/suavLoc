@@ -1,2 +1,4 @@
 CMakeLists.txt
 serial/build/*
+.*
+!.gitignore

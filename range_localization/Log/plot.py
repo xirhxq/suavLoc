@@ -35,8 +35,8 @@ axs[0,0].set_title('Translation')
 axs[1,0].set_title('Velocity')
 axs[0,1].set_title('ba')
 axs[1,1].set_title('ba')
-datas = [predict, update1, update2]
-# datas = [predict, update1]
+# datas = [predict, update1, update2]
+datas = [predict, update1]
 for i in range(len(datas)):
     data = datas[i]
     for j in range(3):
@@ -203,5 +203,5 @@ plt.grid()
 # # # print(a_out3[:,2])
 # plt.grid()
 # plt.savefig("time.pdf", dpi=1200)
-# plt.show()
-plt.savefig("result_plot.png", dpi=1200)
+plt.show()
+# plt.savefig("result_plot.png", dpi=1200)
